@@ -1,29 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { toggleButton } from '../../actions/';
 
 // styled components
-import {
-  Wrap,
-  ItemText,
-  ButtonGroup,
-  LeftButton,
-  RightButton,
-  Buttons,
-  CenterButton,
-} from './RenderDetailsStyles';
+import { Wrap, ItemText } from './RenderDetailsStyles';
 
 import Fade from 'react-reveal';
 import Spinner from '../spinner/Spinner';
 
-const renderDescriptionDetailsOrGoBackBtn = (
-  toggleButtonState,
-  history,
-  id
-) => {
-  toggleButtonState ? history.push(`/${id}`) : history.goBack();
-};
+import RenderButtons from '../render-buttons/RenderButtons';
 
 const renderDescriptionDetailsOnClick = (selectedPostFromState) => {
   return (
@@ -34,13 +19,7 @@ const renderDescriptionDetailsOnClick = (selectedPostFromState) => {
   );
 };
 
-const mainJsxRender = function ({
-  posts,
-  selectedPostFromState,
-  toggleButtonState,
-  history,
-  toggleButton,
-}) {
+const mainJsxRender = function ({ posts, selectedPostFromState, history }) {
   return posts.map((post) => {
     return (
       <Wrap key={post.id}>
@@ -59,32 +38,7 @@ const mainJsxRender = function ({
             </div>
           </ItemText>
         </Fade>
-        <Buttons>
-          <Fade bottom>
-            <ButtonGroup>
-              <LeftButton
-                onClick={() => {
-                  toggleButton();
-                  renderDescriptionDetailsOrGoBackBtn(
-                    toggleButtonState,
-                    history,
-                    post.id
-                  );
-                }}
-              >
-                {toggleButtonState ? 'description' : 'back'}
-              </LeftButton>
-              <CenterButton onClick={() => history.push(`/createpost`)}>
-                crete post
-              </CenterButton>
-              {selectedPostFromState ? (
-                <RightButton onClick={() => history.push(`/${post.id}/edit`)}>
-                  edit post
-                </RightButton>
-              ) : null}
-            </ButtonGroup>
-          </Fade>
-        </Buttons>
+        <RenderButtons history={history} postId={post.id} />
         <img className="image" src={post.image} alt={post.owner.title} />
       </Wrap>
     );
@@ -97,15 +51,8 @@ function RenderDetails(state) {
   } else return mainJsxRender(state);
 }
 
-const mapStateToProps = ({ posts, toggleButtonState }) => ({
+const mapStateToProps = ({ posts }) => ({
   posts: posts.data,
-  toggleButtonState: toggleButtonState.toggleButton,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  toggleButton: () => dispatch(toggleButton()),
-});
-
-export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(RenderDetails)
-);
+export default withRouter(connect(mapStateToProps)(RenderDetails));

@@ -6,7 +6,7 @@ import {
   LeftButton,
   CenterButton,
   ButtonGroup,
-} from '../render-details/RenderDetailsStyles';
+} from '../../components/render-buttons/RenderButtonsStyles';
 
 class Form extends Component {
   handleSubmit = (e) => {
